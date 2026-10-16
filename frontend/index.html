@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta name="description" content="Find local deals from neighborhood shops. Reserve for pickup or free local delivery." />
+    <title>Near & Dear — Local finds, better prices</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="config.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Near and Dear home"><span class="brand-mark">n.</span><span>near<span class="brand-amp">&</span>dear</span></a>
+      <nav class="top-actions" aria-label="Main navigation">
+        <button class="nav-link active" id="shop-nav" type="button">Shop local</button>
+        <button class="nav-link hidden" id="reservations-nav" type="button">My reservations</button>
+        <button class="nav-link hidden" id="merchant-nav" type="button">Merchant studio</button>
+        <button class="button button-small button-outline" id="auth-button" type="button">Sign in</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="shop-view">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="live-dot"></span> GOOD THINGS, JUST AROUND THE CORNER</span>
+            <h1>Your neighborhood.<br /><em>On the map.</em></h1>
+            <p>Find the little shops with the lovely deals. Reserve what you need, skip the delivery fee, and keep good things close.</p>
+            <a class="hero-cta" href="#discover">Explore nearby <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="sun-shape"></div>
+            <div class="art-card art-card-top"><span class="art-emoji">🥬</span><span><b>Fresh finds</b><small>Picked close to home</small></span><span class="art-arrow">↗</span></div>
+            <div class="map-route"><span class="route-dot"></span><span class="route-line"></span><span class="route-pin">⌖</span></div>
+            <div class="art-card art-card-bottom"><span class="art-emoji">🥛</span><span><b>Little local deal</b><small>Just 6 min away</small></span><span class="discount-pill">−20%</span></div>
+            <span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span>
+          </div>
+        </section>
+
+        <section class="shop-section" id="discover">
+          <div class="section-heading">
+            <div><span class="eyebrow">A GOOD PLACE TO START</span><h2>Good things, <em>close by.</em></h2></div>
+            <span class="distance-note"><span class="distance-icon">⌖</span> Distances are set by local shops</span>
+          </div>
+          <div class="filter-bar">
+            <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Try “fresh milk” or “notebook”" aria-label="Search local products" /><kbd>↵</kbd></label>
+            <label class="select-wrap"><span class="sr-only">Category</span><select id="category-filter"><option value="all">All finds</option></select></label>
+            <label class="distance-filter"><span>Within</span><select id="distance-filter" aria-label="Maximum distance"><option value="1">1 km</option><option value="2" selected>2 km</option><option value="5">5 km</option><option value="50">Any distance</option></select></label>
+            <label class="discount-toggle"><input id="discount-filter" type="checkbox" /><span class="toggle-track"></span><span>On special</span></label>
+          </div>
+          <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+          <div id="product-grid" class="product-grid" aria-live="polite"><div class="loading-state">Finding your nearby favorites…</div></div>
+        </section>
+        <section class="local-note"><span class="local-note-icon">♡</span><div><strong>Every little shop makes a big difference.</strong><p>Keep your spend in the neighborhood. Pickup is always free; delivery is arranged directly with the shop.</p></div></section>
+      </section>
+
+      <section id="reservations-view" class="page-section hidden">
+        <div class="section-heading"><div><span class="eyebrow">YOUR LOCAL FINDS</span><h2>My <em>reservations.</em></h2></div></div>
+        <div id="buyer-reservations" class="reservation-list"></div>
+      </section>
+
+      <section id="merchant-view" class="page-section hidden">
+        <div class="section-heading"><div><span class="eyebrow">YOUR LITTLE CORNER OF THE INTERNET</span><h2>Merchant <em>studio.</em></h2></div><button id="add-product-button" class="button button-primary" type="button">＋ Add a listing</button></div>
+        <div id="merchant-products" class="merchant-products"></div>
+        <div class="merchant-reservations-section"><h3>Incoming reservations</h3><div id="merchant-reservations" class="reservation-list"></div></div>
+      </section>
+    </main>
+
+    <footer><a class="brand footer-brand" href="#"><span class="brand-mark">n.</span><span>near<span class="brand-amp">&</span>dear</span></a><span>Good things happen close to home.</span><span class="footer-disclaimer">Reservations only · No payment collected</span></footer>
+
+    <dialog id="auth-dialog" class="modal">
+      <form id="auth-form" class="modal-card">
+        <button class="modal-close" type="button" data-close="auth-dialog" aria-label="Close">×</button>
+        <span class="eyebrow">A NEIGHBORHOOD HELLO</span><h2 id="auth-title">Welcome <em>back.</em></h2>
+        <div class="auth-mode"><button type="button" id="login-mode" class="mode-choice selected">Sign in</button><button type="button" id="register-mode" class="mode-choice">Create account</button></div>
+        <label class="form-field">Email address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+        <label class="form-field">Password<input name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters" /></label>
+        <label id="role-field" class="form-field hidden">I’m joining as<select name="role"><option value="buyer">A local shopper</option><option value="merchant">A local merchant</option></select></label>
+        <label id="store-field" class="form-field hidden">Shop name<input name="store_name" maxlength="120" placeholder="Your neighborhood shop" /></label>
+        <p class="form-error hidden" id="auth-error" role="alert"></p>
+        <button class="button button-primary button-full" type="submit" id="auth-submit">Sign in</button>
+        <p class="form-footnote">Your password is securely hashed. No payment details are collected.</p>
+      </form>
+    </dialog>
+
+    <dialog id="reservation-dialog" class="modal">
+      <form id="reservation-form" class="modal-card">
+        <button class="modal-close" type="button" data-close="reservation-dialog" aria-label="Close">×</button>
+        <span class="eyebrow">SAVE YOUR LOCAL FIND</span><h2>Make it <em>yours.</em></h2>
+        <div id="reservation-product" class="reservation-product"></div>
+        <input type="hidden" name="product_id" />
+        <label class="form-field">Quantity<input name="quantity" type="number" min="1" value="1" required /></label>
+        <label class="form-field">How would you like it?<select name="fulfillment"><option value="pickup">Store pickup — always free</option><option value="delivery">Ask about free local delivery</option></select></label>
+        <label id="delivery-field" class="form-field hidden">Delivery address<input name="delivery_address" maxlength="500" placeholder="Street, neighborhood, city" /></label>
+        <p class="form-footnote">This creates a reservation request only. The shop will confirm availability; no payment or delivery is processed here.</p>
+        <p class="form-error hidden" id="reservation-error" role="alert"></p>
+        <button class="button button-primary button-full" type="submit">Request reservation</button>
+      </form>
+    </dialog>
+
+    <dialog id="product-dialog" class="modal">
+      <form id="product-form" class="modal-card">
+        <button class="modal-close" type="button" data-close="product-dialog" aria-label="Close">×</button>
+        <span class="eyebrow">SHARE A GOOD FIND</span><h2 id="product-form-title">Add a <em>listing.</em></h2>
+        <input type="hidden" name="id" />
+        <label class="form-field">Product name<input name="product" required maxlength="160" /></label>
+        <label class="form-field">Category<input name="category" required maxlength="80" placeholder="e.g. Bakery" /></label>
+        <label class="form-field">A little about it<textarea name="description" maxlength="2000" rows="2"></textarea></label>
+        <label class="form-field">Store name<input name="store" required maxlength="120" /></label>
+        <div class="form-row"><label class="form-field">Regular price (₹)<input name="price" type="number" min="0.01" step="0.01" required /></label><label class="form-field">Special price (₹)<input name="discount_price" type="number" min="0.01" step="0.01" required /></label></div>
+        <div class="form-row"><label class="form-field">Available quantity<input name="quantity" type="number" min="0" step="1" required /></label><label class="form-field">Distance (km)<input name="distance_km" type="number" min="0" step="0.1" required /></label></div>
+        <p class="form-error hidden" id="product-error" role="alert"></p>
+        <button class="button button-primary button-full" type="submit">Save listing</button>
+      </form>
+    </dialog>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </body>
+</html>
